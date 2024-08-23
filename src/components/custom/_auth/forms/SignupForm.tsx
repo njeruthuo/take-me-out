@@ -50,8 +50,9 @@ const SignupForm = () => {
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+    /**
+     * Make an attempt to sign up the user here then redirect the user to a login page.
+     */
     console.log(values);
   }
 

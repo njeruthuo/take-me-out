@@ -1,7 +1,6 @@
 export type Gender = "Male" | "Female" | "Other" | "";
 export type Preference = "girls" | "guys" | "both" | "";
 
-
 export interface State {
   loading: boolean;
   isLoggedIn: boolean;
