@@ -1,5 +1,7 @@
 import { State } from "@/lib/types";
 
+const date = new Date();
+
 export const store: State = {
   loading: false,
   isLoggedIn: false,
@@ -13,7 +15,7 @@ export const store: State = {
       bio: "",
       gender: "",
       phone_number: "",
-      date_of_birth: "",
+      date_of_birth: date,
       preference: "",
     },
   },
