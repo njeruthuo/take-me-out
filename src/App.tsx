@@ -16,7 +16,7 @@ export default function App() {
       <div className="mx-auto w-[90%] my-4">
         <Routes>
           <Route element={<RootLayout />}>
-            <Route index element={<Home />} />
+            <Route path="/" element={<Home />} />
           </Route>
           <Route element={<AuthLayout />}>
             <Route path="/sign-up" element={<SignupForm />} />
