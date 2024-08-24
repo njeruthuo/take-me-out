@@ -1,8 +1,15 @@
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Gender } from "@/lib/types";
+import { isAxiosError } from "axios";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { createUser } from "@/lib/actions/createUser";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/components/ui/use-toast";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Form,
   FormControl,
@@ -11,12 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Gender } from "@/lib/types";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -33,6 +34,7 @@ const formSchema = z.object({
 });
 
 const SignupForm = () => {
+  const { toast } = useToast();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,13 +51,48 @@ const SignupForm = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    /**
-     * Make an attempt to sign up the user here then redirect the user to a login page.
-     */
-    console.log(values);
-  }
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const results = await createUser(values);
 
+      if (results.status === 201 && results.statusText == "Created") {
+        toast({
+          title: "Sign up success",
+          description: "You will be redirected shortly.",
+        });
+        // Redirect to login or another page after success
+        window.location.replace("/sign-in");
+      }
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        // Accessing the response data directly from the error object
+        const errResponse = error.response?.data;
+
+        if (errResponse?.username) {
+          toast({
+            title: "Username already used",
+            description: "Try a different username.",
+            variant: "destructive",
+          });
+        }
+        if (errResponse?.email) {
+          toast({
+            title: "Email already exists",
+            description: `A user with this email already exists.`,
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Unexpected error",
+          description: "An unexpected error occurred. Please try again later.",
+          variant: "destructive",
+        });
+      }
+
+      // console.log(`An Error occurred: ${error}`);
+    }
+  }
   return (
     <Form {...form}>
       <div className="sm:w-2/5 sm:mx-auto mx-4 text-xs">

@@ -1,4 +1,5 @@
 import "./index.css";
+import { Toaster } from "@/components/ui/toaster";
 
 import { Home } from "./components/pages";
 import { Route, Routes } from "react-router-dom";
@@ -21,6 +22,7 @@ export default function App() {
           </Route>
         </Routes>
       </div>
+      <Toaster />
     </main>
   );
 }
