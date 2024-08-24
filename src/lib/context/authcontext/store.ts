@@ -7,11 +7,15 @@ export const store: State = {
   isLoggedIn: false,
   user: {
     id: "",
+    token: "" /**
+      Storing a token to the store is very harzadous for 
+      security. Ensure you set a timeout for the expiry of this token 
+      */,
     username: "",
     email: "",
-    profile: {
-      first_name: "",
-      last_name: "",
+    first_name: "",
+    last_name: "",
+    userprofile: {
       bio: "",
       gender: "",
       phone_number: "",

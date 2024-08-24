@@ -6,16 +6,17 @@ export interface State {
   isLoggedIn: boolean;
   user: {
     id: string;
+    token: string;
     username: string;
     email: string;
-    profile?: {
-      first_name: string;
-      last_name: string;
-      bio: string;
+    first_name: string;
+    last_name: string;
+    userprofile?: {
+      bio?: string;
       gender: Gender;
       phone_number: string;
       date_of_birth: Date | string;
-      preference: Preference;
+      preference?: Preference;
     };
   };
 }
@@ -29,4 +30,20 @@ export interface User {
   gender: string;
   phone_number: string;
   date_of_birth: Date | string;
+}
+
+export interface UserData {
+  id: string;
+  token: string;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  userprofile?: {
+    bio?: string;
+    gender: Gender;
+    phone_number: string;
+    date_of_birth: Date | string;
+    preference?: Preference;
+  };
 }

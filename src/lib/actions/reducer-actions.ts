@@ -1,1 +1,6 @@
-export type Action = { type: "LOGIN"; payload: string } | { type: "LOGOUT" };
+import { UserData } from "../types";
+
+export type Action =
+  | { type: "LOGIN"; payload: UserData }
+  | { type: "LOGOUT" }
+  | { type: "LOADING" };

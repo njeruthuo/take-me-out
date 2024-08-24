@@ -1,8 +1,21 @@
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { isAxiosError } from "axios";
+import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { fetchUserData, loginUser } from "@/lib/actions";
+import useUserContext from "@/lib/context/authcontext/useUserContext";
+/***
+ * Arrange such that longer import lines are on the bottom.
+ * Ensure that the onSubmit function returns all required data and store it to store.
+ *
+ * Done ✔️
+ */
+
 import {
   Form,
   FormControl,
@@ -11,11 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { loginUser } from "@/lib/actions/loginUser";
-import { useToast } from "@/components/ui/use-toast";
-import { isAxiosError } from "axios";
+import Loader from "@/components/shared/Loader";
 
 const formSchema = z.object({
   username: z
@@ -29,6 +38,7 @@ const formSchema = z.object({
 
 const LoginForm = () => {
   const { toast } = useToast();
+  const { dispatch, state } = useUserContext();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +50,8 @@ const LoginForm = () => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Begin Loading
+    dispatch({ type: "LOADING" });
     /**
      * Make an attempt to login and store the returned values to the store.
      */
@@ -50,9 +62,18 @@ const LoginForm = () => {
           title: "Login success",
           description: "User credentials verified successfully!",
         });
-        // setTimeout(() => window.location.replace("/"), 2000);
+
+        const data = await fetchUserData(response.data.token);
+
+        // console.log({ ...data, token: response.data.token });
+        dispatch({
+          type: "LOGIN",
+          payload: { ...data, token: response.data.token },
+        });
+
+        setTimeout(() => window.location.replace("/"), 2000);
       }
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       if (isAxiosError(error)) {
         if (
@@ -62,7 +83,7 @@ const LoginForm = () => {
           toast({
             title: "There was an issue with your request",
             description: `${error.response.data.non_field_errors}`,
-            variant:"destructive"
+            variant: "destructive",
           });
         }
 
@@ -74,11 +95,12 @@ const LoginForm = () => {
             variant: "destructive",
           });
         }
-        
       }
       console.log(error);
     }
-    console.log(values);
+    // End Loading
+    dispatch({ type: "LOADING" });
+    // console.log(values);
   }
 
   return (
@@ -118,7 +140,13 @@ const LoginForm = () => {
             )}
           />
           <Button type="submit" className="w-full flex mt-2">
-            Sign in
+            {state.loading ? (
+              <div className="flex place-items-center">
+                <Loader /> Please wait...
+              </div>
+            ) : (
+              "Sign in"
+            )}
           </Button>
 
           <p className="text-center">

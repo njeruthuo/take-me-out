@@ -26,7 +26,14 @@ function saveStateToLocalStorage(state: State) {
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    // Define my action handling here
+    case "LOGIN":
+      return { ...state, user: action.payload, isLoggedIn: true };
+
+    case "LOGOUT":
+      return store;
+
+    case "LOADING":
+      return { ...state, loading: !state.loading };
     default:
       return state;
   }
@@ -47,6 +54,8 @@ type UserContextProviderProps = {
 
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [state, dispatch] = useReducer(reducer, loadStateFromLocalStorage());
+
+  console.log(state);
 
   useEffect(() => {
     saveStateToLocalStorage(state);
