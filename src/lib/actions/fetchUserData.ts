@@ -1,9 +1,10 @@
 import axios from "axios";
+import { url } from "@/global";
 
 export async function fetchUserData(token: string) {
   try {
     const response = await axios.get(
-      "http://localhost:8000/api/user-information/",
+      `${url}/user-information/`,
       {
         headers: {
           Authorization: `Token ${token}`,

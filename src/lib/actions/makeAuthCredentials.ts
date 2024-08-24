@@ -1,8 +1,9 @@
+import { url } from "@/global";
 import axios from "axios";
 
 export async function loginUser(data: { username: string; password: string }) {
   const response = await axios.post(
-    "http://localhost:8000/api/login-auth/",
+    `${url}/login-auth/`,
     data
   );
   return response;
