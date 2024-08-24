@@ -1,7 +1,7 @@
 import "./index.css";
 import { Toaster } from "@/components/ui/toaster";
 
-import { Home } from "./components/pages";
+import { Home, RootLayout } from "./components/pages";
 import { Route, Routes } from "react-router-dom";
 import { Navbar } from "./components/custom/shared";
 import { Separator } from "@/components/ui/separator";
@@ -15,7 +15,9 @@ export default function App() {
 
       <div className="mx-auto w-[90%] my-4">
         <Routes>
-          <Route index element={<Home />} />
+          <Route element={<RootLayout />}>
+            <Route index element={<Home />} />
+          </Route>
           <Route element={<AuthLayout />}>
             <Route path="/sign-up" element={<SignupForm />} />
             <Route path="/sign-in" element={<LoginForm />} />
